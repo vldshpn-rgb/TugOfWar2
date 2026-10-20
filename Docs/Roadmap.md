@@ -7,9 +7,9 @@
 ---
 
 ## Етап 0: Фундамент (зараз)
-- [ ] Git-репозиторій + `.gitignore` для Unity + GitHub
+- [x] Git-репозиторій + `.gitignore` для Unity + GitHub
 - [ ] Новий Unity-проєкт (2D, URP), структура папок
-- [ ] `CLAUDE.md` + `Docs/` (GDD, Roadmap, Decisions)
+- [x] `CLAUDE.md` + `Docs/` (GDD, Roadmap, Decisions)
 - [x] Закрити рішення D-002 (шкода загону)
 - [ ] Короткий документ архітектури: які системи є і хто з ким говорить
 
