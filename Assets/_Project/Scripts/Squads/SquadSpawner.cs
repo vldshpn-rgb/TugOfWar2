@@ -6,12 +6,12 @@ namespace TugOfWar.Squads
     /// <summary>
     /// Створює загін: логіку (Squad) реєструє в SquadSystem, візуал (SquadView) ставить у сцену.
     /// </summary>
-    public sealed class SquadSpawner : MonoBehaviour
+    public sealed class SquadSpawner : MonoBehaviour, ISquadFactory
     {
         [SerializeField] private SquadSystem squadSystem;
         [SerializeField] private SquadView viewPrefab;
 
-        [Tooltip("Тимчасово: загін для кнопок у контекстному меню компонента. Приберемо з появою кнопки виклику.")]
+        [Tooltip("Тимчасово: загін для кнопки ворога в контекстному меню. Приберемо, коли з'явиться ШІ.")]
         [SerializeField] private SquadDefinition debugSquad;
 
         private Lane _lane;
@@ -36,9 +36,6 @@ namespace TugOfWar.Squads
             view.Bind(squad);
             return squad;
         }
-
-        [ContextMenu("Debug: Spawn Player Squad")]
-        private void DebugSpawnPlayer() => Spawn(debugSquad, Side.Player);
 
         [ContextMenu("Debug: Spawn Enemy Squad")]
         private void DebugSpawnEnemy() => Spawn(debugSquad, Side.Enemy);
