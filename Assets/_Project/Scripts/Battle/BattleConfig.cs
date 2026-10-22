@@ -13,6 +13,8 @@ namespace TugOfWar.Battle
         [Header("Лінія")]
         [Tooltip("Відстань між базами, світові одиниці.")]
         [SerializeField, Min(1f)] private float laneLength = 16f;
+        [Tooltip("Наскільки попереду своєї бази з'являються загони.")]
+        [SerializeField, Min(0f)] private float spawnOffset = 1.5f;
 
         [Header("Їжа")]
         [SerializeField, Min(0f)] private float startFood = 10f;
@@ -28,6 +30,7 @@ namespace TugOfWar.Battle
         [SerializeField] private List<SquadDefinition> enemySquads = new();
 
         public float LaneLength => laneLength;
+        public float SpawnOffset => spawnOffset;
         public float StartFood => startFood;
         public float FoodPerSecond => foodPerSecond;
         public BaseDefinition PlayerBase => playerBase;
