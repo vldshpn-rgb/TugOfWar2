@@ -210,6 +210,66 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
+--- !u!1 &231108889
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 231108892}
+  - component: {fileID: 231108891}
+  - component: {fileID: 231108890}
+  m_Layer: 0
+  m_Name: Squads
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &231108890
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 231108889}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 03187b6cb542d1f47acc0fb6c322b7e2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: TugOfWar::TugOfWar.Squads.SquadSpawner
+  squadSystem: {fileID: 231108891}
+  viewPrefab: {fileID: 3715479144350476425, guid: d8ec1ed952288594a9c66d4339bccd38, type: 3}
+  debugSquad: {fileID: 11400000, guid: 07bdf6f476009f545940682ba6c6bb02, type: 2}
+--- !u!114 &231108891
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 231108889}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a095e229a1a593846869ef4376b68d5f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: TugOfWar::TugOfWar.Squads.SquadSystem
+--- !u!4 &231108892
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 231108889}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &330585543
 GameObject:
   m_ObjectHideFlags: 0
@@ -697,6 +757,7 @@ MonoBehaviour:
   config: {fileID: 11400000, guid: b18a938955482514c882b8b94c150f7d, type: 2}
   playerBase: {fileID: 1659527927}
   enemyBase: {fileID: 490009620}
+  squadSpawner: {fileID: 231108890}
 --- !u!4 &1211978664
 Transform:
   m_ObjectHideFlags: 0
@@ -1180,3 +1241,4 @@ SceneRoots:
   - {fileID: 1659527928}
   - {fileID: 490009621}
   - {fileID: 1211978664}
+  - {fileID: 231108892}

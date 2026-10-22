@@ -17,9 +17,13 @@ namespace TugOfWar.Battle
         public bool IsDestroyed => CurrentHp <= 0f;
         public float HpFraction => MaxHp > 0f ? CurrentHp / MaxHp : 0f;
 
-        public void Init(BaseDefinition definition, Side side)
+        /// <summary>Y переднього краю бази (звернений до центру лінії); від нього загони рахують дистанцію атаки.</summary>
+        public float FrontY { get; private set; }
+
+        public void Init(BaseDefinition definition, Side side, float frontY)
         {
             Side = side;
+            FrontY = frontY;
             MaxHp = definition.MaxHp;
             CurrentHp = MaxHp;
             HpChanged?.Invoke();

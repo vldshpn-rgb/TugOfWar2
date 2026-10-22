@@ -13,3 +13,4 @@ MonoBehaviour:
   m_Name: PlayerBase
   m_EditorClassIdentifier: TugOfWar::TugOfWar.Battle.BaseDefinition
   maxHp: 500
+  halfDepth: 0.6
