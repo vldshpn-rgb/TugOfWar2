@@ -17,7 +17,7 @@ MonoBehaviour:
   foodCost: 5
   soldierCount: 10
   soldierHp: 10
-  soldierPrefab: {fileID: 0}
+  soldierPrefab: {fileID: 1273005781177939778, guid: b7714cb999719564da2faf2384bedc40, type: 3}
   meleeDamage: 14
   rangedDamage: 0
   baseDamageShare: 0.5

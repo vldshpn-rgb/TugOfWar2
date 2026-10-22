@@ -16,7 +16,7 @@ namespace TugOfWar.Tests
             _definition = ScriptableObject.CreateInstance<BaseDefinition>(); // MaxHp = 500 за замовчуванням
             _go = new GameObject("Base");
             _base = _go.AddComponent<Base>();
-            _base.Init(_definition, Side.Player);
+            _base.Init(_definition, Side.Player, -7.4f);
         }
 
         [TearDown]
