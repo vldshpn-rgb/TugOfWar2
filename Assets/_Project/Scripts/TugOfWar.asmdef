@@ -1,7 +1,9 @@
 {
     "name": "TugOfWar",
     "rootNamespace": "TugOfWar",
-    "references": [],
+    "references": [
+        "UnityEngine.UI"
+    ],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
