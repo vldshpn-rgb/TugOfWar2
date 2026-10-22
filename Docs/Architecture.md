@@ -22,7 +22,7 @@
 5. **Один скрипт, одна відповідальність.** Якщо скрипт важко назвати одним іменником, його варто розділити.
 6. **Пул об'єктів для масових речей.** Солдатів, стріл, монет і ефектів буде багато, а на телефоні часте
    `Instantiate`/`Destroy` гальмує. Такі об'єкти беремо з пулу і повертаємо в нього.
-   (У прототипі поки `Instantiate`; пул вводимо разом з ефектами і монетами на Етапі 2.)
+   (У прототипі поки `Instantiate`; пул солдатів вводимо на Етапі 2A, якщо замір на Android покаже просідання.)
 7. **Логіка у звичайних C#-класах, `MonoBehaviour` лише тонка обгортка.** Правила гри (`Squad`, `SquadSimulation`,
    `FoodBank`, `SquadSummoner`, `EnemyCommander`, `BattleOutcome`, `Lane`) не залежать від сцени й покриті
    EditMode-тестами. `MonoBehaviour` лише подає кадри (`Update`), тримає посилання з інспектора і малює.
@@ -177,13 +177,15 @@ flowchart LR
   end
   subgraph Battle
     BC[BattleController]
+    Outcome[BattleOutcome]
     Lane
     Base
     AI[EnemyCommander]
   end
   subgraph Squads
-    Queue[SummonQueue]
+    Summoner[SquadSummoner<br/>→ SummonQueue, Етап 2B]
     Spawner[SquadSpawner]
+    Sim[SquadSystem → SquadSimulation]
     Squad
     View[SquadView / SoldierView]
   end
@@ -193,22 +195,23 @@ flowchart LR
   end
   Data[(ScriptableObject:<br/>SquadDefinition, ComboBook,<br/>BattleConfig, BaseDefinition)]
 
-  SpawnButton --> Queue
-  AI --> Queue
-  Queue --> Food
-  Queue --> Spawner
-  Queue --> Data
+  SpawnButton --> Summoner
+  AI --> Summoner
+  Summoner --> Food
+  Summoner --> Spawner
   Spawner --> Lane
   Spawner --> Squad
+  Spawner --> Sim
+  Sim --> Squad
   Squad --> Data
-  Spawner --> Data
   BC --> Data
-  Squad -. SoldierDied .-> View
-  Squad -. SoldierDied .-> Coins
+  Squad -. SoldiersDied .-> View
+  Squad -. SoldiersDied .-> Coins
   Squad -->|атакує| Base
   Food -. Changed .-> FoodCounter
-  BC -. BattleEnded .-> ResultScreen
-  Base -. знищена .-> BC
+  Base -. Destroyed .-> Outcome
+  Outcome -. Ended .-> ResultScreen
+  Outcome -. Ended .-> BC
 ```
 
 **Напрямок залежностей:** `UI → Battle / Squads / Economy → Data`. Нижчі шари не знають про вищі:
