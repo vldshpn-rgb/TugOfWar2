@@ -321,7 +321,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: TugOfWar::TugOfWar.Squads.SquadSpawner
   squadSystem: {fileID: 231108891}
   viewPrefab: {fileID: 3715479144350476425, guid: d8ec1ed952288594a9c66d4339bccd38, type: 3}
-  debugSquad: {fileID: 11400000, guid: 07bdf6f476009f545940682ba6c6bb02, type: 2}
 --- !u!114 &231108891
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1554,7 +1553,7 @@ MonoBehaviour:
     m_FontStyle: 0
     m_BestFit: 0
     m_MinSize: 10
-    m_MaxSize: 40
+    m_MaxSize: 44
     m_Alignment: 0
     m_AlignByGeometry: 0
     m_RichText: 1
