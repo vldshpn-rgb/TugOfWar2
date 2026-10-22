@@ -32,6 +32,20 @@ Assets/_Project/
   Art/  Audio/
 ```
 
+## Робота з Unity Editor через CLI
+Unity CLI (`unity`) встановлений, а в проєкті є пакет Pipeline, тож відкритим редактором можна керувати напряму.
+Скіл `unity-cli` містить повний довідник.
+- `unity status`: чи підключений редактор (стан `ready`). Після перекомпіляції сервер ненадовго зникає
+  (domain reload); чекай через `unity status --until-ready`.
+- `unity recompile`: перекомпілювати й отримати помилки та попередження.
+- `unity command test run --mode editor --result-only`: запустити EditMode-тести.
+- `unity command script eval_file --file <шлях до .cs у scratchpad> --result-only`: виконати C# у редакторі.
+  Так створюються ассети і об'єкти сцени (через `SerializedObject`, `AssetDatabase`).
+- `unity command` без аргументів: список усіх команд (сцени, GameObject-и, Play mode, Console, скріншоти).
+- Не правити YAML `.unity` / `.prefab` / `.asset` руками, поки редактор доступний.
+- Перевіряй сам усе, що можна перевірити через CLI (компіляція, тести, Console, Play mode); Влада проси
+  перевірити те, що треба побачити очима або відчути в грі.
+
 ## Робочий процес
 - Кожна задача в окремій гілці, зміни через PR.
 - Не комить згенеровані Unity папки (`Library/`, `Temp/`, `Logs/`, `Obj/`, `Build/`).

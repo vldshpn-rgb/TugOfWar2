@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9e707b2711e7f1c49a571f7efa2f2b16, type: 3}
+  m_Name: Infantry
+  m_EditorClassIdentifier: TugOfWar::TugOfWar.Squads.SquadDefinition
+  displayName: "\u041F\u0456\u0445\u043E\u0442\u0430"
+  icon: {fileID: 0}
+  foodCost: 5
+  soldierCount: 10
+  soldierHp: 10
+  soldierPrefab: {fileID: 0}
+  meleeDamage: 14
+  rangedDamage: 0
+  baseDamageShare: 0.5
+  armor: 0
+  attackRange: 1
+  attackInterval: 1
+  clashDuration: 0.5
+  moveSpeed: 1
+  coinDropChance: 0

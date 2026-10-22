@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 09e6c741900f88b4bbd295d135a3cef5, type: 3}
+  m_Name: BattleConfig
+  m_EditorClassIdentifier: TugOfWar::TugOfWar.Battle.BattleConfig
+  laneLength: 16
+  startFood: 10
+  foodPerSecond: 1
+  playerBase: {fileID: 11400000, guid: 16b2677af82f8a24dbfba5352d27a4d2, type: 2}
+  enemyBase: {fileID: 11400000, guid: 9f166ca5aac992440922e3f3d7b87121, type: 2}
+  playerSquads:
+  - {fileID: 11400000, guid: 07bdf6f476009f545940682ba6c6bb02, type: 2}
+  enemySquads:
+  - {fileID: 11400000, guid: 07bdf6f476009f545940682ba6c6bb02, type: 2}
