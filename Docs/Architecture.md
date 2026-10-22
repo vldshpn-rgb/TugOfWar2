@@ -22,18 +22,24 @@
 5. **Один скрипт, одна відповідальність.** Якщо скрипт важко назвати одним іменником, його варто розділити.
 6. **Пул об'єктів для масових речей.** Солдатів, стріл, монет і ефектів буде багато, а на телефоні часте
    `Instantiate`/`Destroy` гальмує. Такі об'єкти беремо з пулу і повертаємо в нього.
+   (У прототипі поки `Instantiate`; пул вводимо разом з ефектами і монетами на Етапі 2.)
+7. **Логіка у звичайних C#-класах, `MonoBehaviour` лише тонка обгортка.** Правила гри (`Squad`, `SquadSimulation`,
+   `FoodBank`, `SquadSummoner`, `EnemyCommander`, `BattleOutcome`, `Lane`) не залежать від сцени й покриті
+   EditMode-тестами. `MonoBehaviour` лише подає кадри (`Update`), тримає посилання з інспектора і малює.
+   Коли логіці потрібен об'єкт сцени, вона знає про нього через інтерфейс (як `ISquadFactory`), щоб у тесті
+   його можна було замінити заглушкою. Випадковість передається ззовні (`System.Random` із зерном у тестах).
 
 ## 2. Системи
 
 | Система | Папка | Відповідає за | Основні класи |
 |---|---|---|---|
-| **Battle** | `Scripts/Battle` | Хід бою: старт, лінія, бази, перемога/поразка, ворожий ШІ | `BattleController`, `Lane`, `Base`, `BaseDefense`, `EnemyCommander` |
-| **Squads** | `Scripts/Squads` | Виклик і комбо, загін: стан, рух, пошук цілі, бій, смерть солдатів | `SummonQueue`, `ComboBook`, `Squad`, `SquadStateMachine`, `SquadCombat`, `SquadSpawner`, `SquadView`, `SoldierView` |
-| **Economy** | `Scripts/Economy` | Їжа в бою, монети з убитих солдатів | `FoodBank`, `CoinDropper`, `CoinWallet` |
-| **UI** | `Scripts/UI` | Кнопки виклику, шкала їжі, екран результату | `SpawnButton`, `FoodBar`, `BattleResultScreen` |
-| **Meta** | `Scripts/Meta` | Прокачка і збереження між боями (Етап 3) | `PlayerProgress`, `UpgradeService`, `SaveSystem` |
+| **Battle** | `Scripts/Battle` | Хід бою: старт, лінія, бази, перемога/поразка, ворожий ШІ | `BattleController`, `BattleOutcome`, `Lane`, `Base`, `EnemyCommander`, *`BaseDefense`* |
+| **Squads** | `Scripts/Squads` | Виклик і комбо, загін: стан, рух, пошук цілі, бій, смерть солдатів | `Squad`, `SquadHealth`, `CombatFormulas`, `SquadSimulation`, `SquadSystem`, `SquadSummoner`, `SquadSpawner`, `SquadView`, `SoldierView`, *`SummonQueue`*, *`ComboBook`* |
+| **Economy** | `Scripts/Economy` | Їжа в бою, монети з убитих солдатів | `FoodBank`, *`CoinDropper`*, *`CoinWallet`* |
+| **UI** | `Scripts/UI` | Кнопки виклику, їжа, HP баз, екран результату | `SummonPanel`, `SpawnButton`, `FoodCounter`, `BaseHpBar`, `BattleResultScreen` |
+| **Meta** | `Scripts/Meta` | Прокачка і збереження між боями (Етап 3) | *`PlayerProgress`*, *`UpgradeService`*, *`SaveSystem`* |
 
-Назви класів тут орієнтовні: вони показують розподіл обов'язків, а не готовий список файлів.
+Курсивом позначені класи, яких ще немає в коді (заплановані); їхні назви орієнтовні.
 
 ### 2.1 Battle
 - **`BattleController`** запускає бій, тримає посилання на інші системи сцени і зупиняє їх, коли бій закінчено.
@@ -44,13 +50,13 @@
 - **`Base`** це база сторони з HP. Ворожі загони, що дійшли до неї, атакують її; коли HP = 0, вона
   повідомляє подію `Destroyed`.
 - **`BaseDefense`** (відкривається прокачкою, D-010) стріляє по найближчому ворогу в радіусі. Він використовує
-  ту саму логіку дальньої атаки, що й `SquadCombat`, з даними в `BaseDefinition`, а не власну формулу.
+  ту саму логіку дальньої атаки, що й загони (`CombatFormulas`), з даними в `BaseDefinition`, а не власну формулу.
 - **`EnemyCommander`** це ШІ супротивника. Він викликає загони **через ту саму** `SummonQueue` своєї сторони,
   що й гравець (їжа, слоти, кулдаун, комбо), тож у ШІ немає «чітерських» шляхів. Правила ШІ **[ВІДКРИТО]** (GDD 3.9).
 
 ### 2.2 Squads
 - **`Squad`** це логічний об'єкт загону: сторона, тип (`SquadDefinition`), кількість живих солдатів,
-  позиція на лінії. Повідомляє про зміни подіями `SoldierDied`, `StateChanged`, `Destroyed`.
+  позиція на лінії. Повідомляє про зміни подіями `SoldiersDied(кількість)`, `StateChanged`, `Destroyed`.
   `Squad` це звичайний C#-клас, а не `MonoBehaviour`: його можна перевіряти тестами без сцени.
   Позиція на лінії це координата Y (лінія вертикальна, `Lane`).
 - **`SquadSimulation`** (звичайний C#-клас) робить крок бою для всіх загонів: кожен обирає ціль, потім
@@ -66,12 +72,15 @@
   який загін вийде (одиночний, подвійний чи рецепт), і просить `SquadSpawner` його створити.
 - **`ComboBook`** це ScriptableObject з рецептами (розділ 3.2 нижче; рецепти в GDD 3.5). Порядок пари не важливий: рецепт шукається за
   невпорядкованою парою типів.
-- **`SquadStateMachine`** відповідає за стани з GDD 3.2: `Марш → Зіткнення → Бій → (Марш | Знищення)`,
-  для дальніх ще `Стрільба` перед `Бій`.
+- **Стани з GDD 3.2** (`Марш → Зіткнення → Бій → (Марш | Знищення)`) зараз живуть у `Squad.Advance`
+  (enum `SquadState`). Коли з'явиться поведінка, що відрізняється за типом (`Стрільба` у дальніх, удар
+  вершників при зіткненні, колісниці), стани виносимо в окремий клас (`SquadStateMachine` або стратегії
+  поведінки), щоб `Squad` не розростався.
 - **Пошук цілі (D-006):** найближчий ворожий загін у радіусі атаки. Ближні загони вливаються в сутичку, де вже
   б'ються інші (один загін може мати кількох супротивників); дальні зупиняються на своїй дистанції.
-- **`SquadCombat`** раз на інтервал атаки завдає шкоди цілі: дальньої, поки ворог не поруч, потім ближньої.
-  Розрахунок це чисті функції за D-002 і D-008:
+- **Атака:** у стані `Бій` загін раз на `AttackInterval` створює `Hit` по цілі (загону, а якщо поруч нікого,
+  по ворожій базі, D-011). Зараз лише ближня атака; дальня (`Стрільба`, поки ворог не поруч) з'явиться з
+  лучниками. Розрахунок це чисті функції `CombatFormulas` за D-002 і D-008:
 
   ```csharp
   // D-002: шкода = базова × (частка_бази + (1 − частка_бази) × живі / всього)
@@ -81,12 +90,13 @@
   // D-008: броня зрізає відсоток
   public static float AfterArmor(float damage, float armor) => damage * (1f - armor);
   ```
-  Смерть солдатів (D-008): `Squad` накопичує отриману шкоду; щоразу, коли накопичене ≥ `SoldierHp`,
-  гине один солдат (подія `SoldierDied`), залишок переноситься.
+  Смерть солдатів (D-008): `SquadHealth` накопичує отриману шкоду; щоразу, коли накопичене ≥ `SoldierHp`,
+  гине один солдат (подія `SoldiersDied` у `Squad`), залишок переноситься.
   Окремі чисті функції (без `MonoBehaviour`) потрібні, щоб формули можна було покрити EditMode-тестами.
 - **`SquadSpawner`** створює загін за `SquadDefinition` на точці спавну своєї сторони.
-- **`SquadView` / `SoldierView`** це візуал: розставляють солдатів у стрій, у бою біжать до ворожого строю,
-  показують ефект смерті, коли `Squad` повідомляє `SoldierDied`. Логіку вони не змінюють.
+- **`SquadView` / `SoldierView`** це візуал: розставляють солдатів у стрій і ховають загиблих (першими передні
+  ряди), коли `Squad` повідомляє `SoldiersDied`. Логіку вони не змінюють. На Етапі 2: у бою солдати біжать
+  до ворожого строю (і загони однієї сторони в сутичці перестануть зливатися в одну точку), ефект смерті.
   Солдати дрібні, тож у бою ефекти замість анімацій (D-009). Порядок малювання по Y: у налаштуваннях
   2D Renderer ставимо Transparency Sort Axis = (0, 1, 0), тоді нижчий спрайт малюється поверх вищого.
 
@@ -162,7 +172,7 @@ HP і параметри захисту (дальня шкода, радіус, 
 flowchart LR
   subgraph UI
     SpawnButton
-    FoodBar
+    FoodCounter
     ResultScreen[BattleResultScreen]
   end
   subgraph Battle
@@ -196,7 +206,7 @@ flowchart LR
   Squad -. SoldierDied .-> View
   Squad -. SoldierDied .-> Coins
   Squad -->|атакує| Base
-  Food -. Changed .-> FoodBar
+  Food -. Changed .-> FoodCounter
   BC -. BattleEnded .-> ResultScreen
   Base -. знищена .-> BC
 ```
@@ -215,19 +225,22 @@ flowchart LR
 Assets/
   _Project/                  усе наше; решта в Assets/ від Unity і пакетів
     Scripts/
-      Battle/                BattleController, Lane, Base, EnemyCommander
-      Squads/                Squad, стани, бій, спавн, візуал загону й солдатів
+      Battle/                BattleController, BattleOutcome, Lane, Base, EnemyCommander, BattleConfig
+      Squads/                Squad, SquadSimulation, формули, виклик, спавн, візуал загону й солдатів
       Economy/               FoodBank, CoinDropper, CoinWallet
       UI/                    кнопки, шкали, екран результату
       Meta/                  прокачка, збереження (Етап 3)
     Data/
       Squads/                SquadDefinition-и: Infantry.asset, Archers.asset…
-      Battle/                BattleConfig.asset
-    Prefabs/                 Squad, Soldier_*, Base, UI-елементи
+      Battle/                BattleConfig.asset, PlayerBase.asset, EnemyBase.asset
+    Prefabs/
+      Squads/                Squad.prefab (SquadView), Soldier.prefab (SoldierView)
+      UI/                    SpawnButton.prefab
     Tests/
-      EditMode/              тести чистих функцій (формули D-002, D-008, пошук рецепта)
-    Scenes/                  SampleScene (стане сценою бою), пізніше Menu
-    Art/  Audio/
+      EditMode/              тести логіки: формули, симуляція бою, їжа, виклик, ШІ, умова перемоги
+    Scenes/                  SampleScene (сцена бою), пізніше Menu
+    Art/Placeholder/         тимчасові спрайти Square і Circle (до справжнього арту)
+    Audio/
   Settings/                  URP-ассети і 2D Renderer (створені Unity, тут і лишаються)
 ```
 
