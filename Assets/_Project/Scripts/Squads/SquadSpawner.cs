@@ -11,9 +11,6 @@ namespace TugOfWar.Squads
         [SerializeField] private SquadSystem squadSystem;
         [SerializeField] private SquadView viewPrefab;
 
-        [Tooltip("Тимчасово: загін для кнопки ворога в контекстному меню. Приберемо, коли з'явиться ШІ.")]
-        [SerializeField] private SquadDefinition debugSquad;
-
         private Lane _lane;
         private Base _playerBase;
         private Base _enemyBase;
@@ -36,8 +33,5 @@ namespace TugOfWar.Squads
             view.Bind(squad);
             return squad;
         }
-
-        [ContextMenu("Debug: Spawn Enemy Squad")]
-        private void DebugSpawnEnemy() => Spawn(debugSquad, Side.Enemy);
     }
 }

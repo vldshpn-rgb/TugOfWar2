@@ -24,6 +24,8 @@ namespace TugOfWar.Battle
         public SquadSummoner PlayerSummoner { get; private set; }
         public SquadSummoner EnemySummoner { get; private set; }
 
+        private EnemyCommander _enemyCommander;
+
         private void Awake()
         {
             Lane = new Lane(config.LaneLength, config.SpawnOffset);
@@ -34,6 +36,8 @@ namespace TugOfWar.Battle
             PlayerSummoner = CreateSummoner(Side.Player);
             EnemySummoner = CreateSummoner(Side.Enemy);
 
+            _enemyCommander = new EnemyCommander(EnemySummoner, config.EnemySquads, new System.Random());
+
             foodCounter.Init(PlayerSummoner.Food);
             summonPanel.Init(PlayerSummoner, config.PlayerSquads);
         }
@@ -43,6 +47,7 @@ namespace TugOfWar.Battle
             float deltaTime = Time.deltaTime;
             PlayerSummoner.Food.Tick(deltaTime);
             EnemySummoner.Food.Tick(deltaTime);
+            _enemyCommander.Tick();
         }
 
         private void SetupBase(Base target, BaseDefinition definition, Side side)

@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using NUnit.Framework;
 using TugOfWar.Battle;
 using TugOfWar.Economy;
@@ -12,18 +11,6 @@ namespace TugOfWar.Tests
     public class FoodAndSummonTests
     {
         private const float Tolerance = 1e-4f;
-
-        /// <summary>Фабрика-заглушка: лише запам'ятовує, що її попросили створити.</summary>
-        private sealed class FakeFactory : ISquadFactory
-        {
-            public readonly List<(SquadDefinition definition, Side side)> Spawned = new();
-
-            public Squad Spawn(SquadDefinition definition, Side side)
-            {
-                Spawned.Add((definition, side));
-                return null;
-            }
-        }
 
         private SquadDefinition _infantry; // ціна 5 за замовчуванням
 
@@ -80,7 +67,7 @@ namespace TugOfWar.Tests
         [Test]
         public void Summon_EnoughFood_SpendsAndSpawnsOnOwnSide()
         {
-            var factory = new FakeFactory();
+            var factory = new FakeSquadFactory();
             var summoner = new SquadSummoner(Side.Enemy, new FoodBank(10f, 1f), factory);
 
             Assert.That(summoner.TrySummon(_infantry), Is.True);
@@ -93,7 +80,7 @@ namespace TugOfWar.Tests
         [Test]
         public void Summon_NotEnoughFood_DoesNothing()
         {
-            var factory = new FakeFactory();
+            var factory = new FakeSquadFactory();
             var summoner = new SquadSummoner(Side.Player, new FoodBank(4f, 1f), factory);
 
             Assert.That(summoner.CanSummon(_infantry), Is.False);
