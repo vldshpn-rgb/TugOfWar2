@@ -5,7 +5,8 @@ using UnityEngine;
 namespace TugOfWar.Squads
 {
     /// <summary>
-    /// Візуал загону: розставляє солдатів строєм і рухається за позицією Squad. Логіку не змінює (D-001).
+    /// Візуал загону: розставляє солдатів строєм, рухається за позицією Squad,
+    /// ховає загиблих солдатів. Логіку не змінює (D-001).
     /// </summary>
     public sealed class SquadView : MonoBehaviour
     {
@@ -20,12 +21,22 @@ namespace TugOfWar.Squads
 
         private readonly List<SoldierView> _soldiers = new();
         private Squad _squad;
+        private int _nextToDie;
 
         public void Bind(Squad squad)
         {
             _squad = squad;
+            _squad.SoldiersDied += OnSoldiersDied;
+            _squad.Destroyed += OnDestroyed;
             SpawnSoldiers();
             SyncPosition();
+        }
+
+        private void OnDestroy()
+        {
+            if (_squad == null) return;
+            _squad.SoldiersDied -= OnSoldiersDied;
+            _squad.Destroyed -= OnDestroyed;
         }
 
         private void LateUpdate()
@@ -34,6 +45,15 @@ namespace TugOfWar.Squads
         }
 
         private void SyncPosition() => transform.position = new Vector3(0f, _squad.Y, 0f);
+
+        private void OnSoldiersDied(int count)
+        {
+            // Першими гинуть передні ряди. Ефект смерті додамо разом з іншими ефектами (Етап 2).
+            for (int i = 0; i < count && _nextToDie < _soldiers.Count; i++)
+                _soldiers[_nextToDie++].gameObject.SetActive(false);
+        }
+
+        private void OnDestroyed() => Destroy(gameObject);
 
         private void SpawnSoldiers()
         {

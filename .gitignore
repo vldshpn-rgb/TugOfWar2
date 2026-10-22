@@ -63,3 +63,6 @@ Thumbs.db
 
 # Local Claude settings
 .claude/settings.local.json
+
+# Local Unity CLI (Pipeline) tool config, machine-specific
+/ProjectSettings/Packages/com.unity.pipeline/
