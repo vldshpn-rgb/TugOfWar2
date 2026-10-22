@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: BattleConfig
   m_EditorClassIdentifier: TugOfWar::TugOfWar.Battle.BattleConfig
   laneLength: 16
+  spawnOffset: 1.5
   startFood: 10
   foodPerSecond: 1
   playerBase: {fileID: 11400000, guid: 16b2677af82f8a24dbfba5352d27a4d2, type: 2}

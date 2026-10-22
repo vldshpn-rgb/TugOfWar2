@@ -42,6 +42,12 @@ Unity CLI (`unity`) встановлений, а в проєкті є пакет
 - `unity command script eval_file --file <шлях до .cs у scratchpad> --result-only`: виконати C# у редакторі.
   Так створюються ассети і об'єкти сцени (через `SerializedObject`, `AssetDatabase`).
 - `unity command` без аргументів: список усіх команд (сцени, GameObject-и, Play mode, Console, скріншоти).
+- Play mode: `unity command editor.playmode start|stop`. Скріншот: `unity command capture game_view --source camera
+  --width 540 --height 960 --save_path <шлях>`. Шлях рахується від `Assets/`, тож файл стає ассетом:
+  після перегляду видаляй його через `AssetDatabase.DeleteAsset`.
+- У `eval_file` не пиши `using`: `UnityEngine` і `UnityEditor` вже підключені (`Object` пиши як `UnityEngine.Object`).
+- Якщо задаєш ассету значення, що дорівнює значенню за замовчуванням, Unity не зберігає файл; викликай
+  `EditorUtility.SetDirty` + `AssetDatabase.SaveAssetIfDirty`.
 - Не правити YAML `.unity` / `.prefab` / `.asset` руками, поки редактор доступний.
 - Перевіряй сам усе, що можна перевірити через CLI (компіляція, тести, Console, Play mode); Влада проси
   перевірити те, що треба побачити очима або відчути в грі.
