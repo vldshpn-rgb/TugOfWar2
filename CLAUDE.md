@@ -44,7 +44,12 @@ Unity CLI (`unity`) встановлений, а в проєкті є пакет
 - `unity command` без аргументів: список усіх команд (сцени, GameObject-и, Play mode, Console, скріншоти).
 - Play mode: `unity command editor.playmode start|stop`. Скріншот: `unity command capture game_view --source camera
   --width 540 --height 960 --save_path <шлях>`. Шлях рахується від `Assets/`, тож файл стає ассетом:
-  після перегляду видаляй його через `AssetDatabase.DeleteAsset`.
+  після перегляду видаляй його через `AssetDatabase.DeleteAsset`. `--source screen` знімає разом з UI.
+- Без фокусу редактор у Play mode стоїть на першому кадрі: перед перевіркою вмикай
+  `unity command editor.playmode set_run_in_background --enable true`, а після неї обов'язково `--enable false`.
+  Інакше `runInBackground: 1` потрапить у `ProjectSettings.asset`; перед комітом перевір, що його там немає.
+- Перед новим кроком перевір, що PR попереднього змерджений (`git fetch` + `git log origin/main`);
+  якщо ні, нова гілка йде від гілки попереднього кроку, а не від `main`.
 - У `eval_file` не пиши `using`: `UnityEngine` і `UnityEditor` вже підключені (`Object` пиши як `UnityEngine.Object`).
 - Якщо задаєш ассету значення, що дорівнює значенню за замовчуванням, Unity не зберігає файл; викликай
   `EditorUtility.SetDirty` + `AssetDatabase.SaveAssetIfDirty`.
